@@ -1,9 +1,12 @@
 
 import streamlit as st
+import markdown  
 from openai import OpenAI
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+
+
 
 st.set_page_config(page_title="Squadra Agenti IA Didattica", page_icon="🤖", layout="centered")
 
@@ -90,6 +93,10 @@ if 'post_finale' in st.session_state:
                     msg['To'] = destinatario
                     msg['Subject'] = f"🤖 Report IA: {tema}"
                     
+                    # CONVERSIONE IN HTML PULITO TRAMITE MARKDOWN
+                    html_agente1 = markdown.markdown(st.session_state['punti_chiave'], extensions=['extra', 'nl2br'])
+                    html_agente2 = markdown.markdown(st.session_state['post_finale'], extensions=['extra', 'nl2br'])
+                    
                     corpo_html = f"""
                     <html>
                       <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
@@ -98,11 +105,11 @@ if 'post_finale' in st.session_state:
                         <hr>
                         <h3 style="color: #3c4043;">🔍 Punti Chiave (Ricercatore)</h3>
                         <div style="background: #f8f9fa; padding: 15px; border-left: 4px solid #dadce0; border-radius: 4px;">
-                          {st.session_state['punti_chiave'].replace(chr(10), '<br>')}
+                          {html_agente1}
                         </div>
                         <h3 style="color: #3c4043; margin-top: 20px;">✍️ Post Divulgativo (Scrittore)</h3>
                         <div style="background: #e8f0fe; padding: 15px; border-left: 4px solid #1a73e8; border-radius: 4px;">
-                          {st.session_state['post_finale'].replace(chr(10), '<br>')}
+                          {html_agente2}
                         </div>
                         <hr style="margin-top: 25px;">
                         <p style="font-size: 0.8em; color: #777;">Generato tramite Web App Streamlit e OpenRouter.</p>
